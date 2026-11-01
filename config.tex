@@ -1,0 +1,34 @@
+% Shared settings. This file is read BEFORE \documentclass.
+% Do not put \usepackage, \definecolor or document text here.
+
+% Text + math font profile: charter | times | modern
+\newcommand{\LabFontProfile}{charter}
+
+% HTML colors: exactly 6 hexadecimal digits, WITHOUT #.
+\newcommand{\LabTitleColor}{0000B3}
+\newcommand{\LabHeadingColor}{000000}
+\newcommand{\LabBodyColor}{000000}
+\newcommand{\LabLinkColor}{000080}
+\newcommand{\LabRuleColor}{000000}
+\newcommand{\LabAbstractBackground}{F2F2F2}
+\newcommand{\LabAbstractBorder}{B3B3B3}
+\newcommand{\LabNoteColor}{B45309}
+
+% Sizes in pt. Baseline should be larger than the corresponding font size.
+\newcommand{\LabTitleSize}{21}
+\newcommand{\LabTitleLeading}{23}
+\newcommand{\LabAuthorSize}{11}
+\newcommand{\LabAffiliationSize}{10}
+\newcommand{\LabSectionSize}{13}
+
+% true = enabled; false = disabled. Change only the last word in each pair.
+\newif\ifLabCoverPage     \LabCoverPagetrue
+\newif\ifLabShowTOC       \LabShowTOCtrue
+\newif\ifLabShowAppendix  \LabShowAppendixtrue
+\newif\ifLabShowNotes     \LabShowNotestrue
+\newif\ifLabAnonymous     \LabAnonymousfalse
+\newif\ifLabMonochrome    \LabMonochromefalse
+
+% English manuscripts: false (pdfLaTeX or XeLaTeX).
+% Chinese manuscripts: true AND switch the compiler to XeLaTeX.
+\newif\ifLabChinese       \LabChinesefalse

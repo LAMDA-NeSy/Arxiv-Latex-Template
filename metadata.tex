@@ -1,0 +1,31 @@
+% All names, affiliations, addresses and links below are placeholders.
+\title{Manuscript Title}
+\LabRunningTitle{Short Manuscript Title}
+\LabDate{} % e.g. \LabDate{\today}, \LabDate{YYYY-MM-DD}, or empty to hide.
+
+% Syntax: \LabAuthor{Name}{affiliation numbers}{roles}
+% Roles: core = *, corr = dagger, lead = double dagger; empty {} = no role.
+\LabAuthor{Author One}{1,2}{core}
+\LabAuthor{Author Two}{1}{core,corr}
+\LabAuthor{Author Three}{2}{corr,lead}
+\LabAuthor{Author Four}{1}{}
+
+\LabAffiliation{1}{Laboratory or Research Group, Institution, City, Country}
+\LabAffiliation{2}{Department or School, Institution, City, Country}
+
+% Repeat for multiple addresses. Emails appear together on one line, without names.
+\LabEmail{author.two@example.org}
+\LabEmail{author.three@example.org}
+
+% Optional resources: label, URL, displayed text. Remove the entire line to hide.
+\LabResource{Project}{https://example.org/project}{Project page}
+\LabResource{Code}{https://example.org/code}{Code repository}
+% \LabResource{Data}{https://example.org/data}{Dataset}
+
+% Optional non-author project leader. This does NOT add someone as an author.
+% \LabProjectLead{Project Leader Name}
+
+% Role legend text can be changed without editing the class.
+% \renewcommand{\LabCoreLabel}{Equal Contribution}
+% \renewcommand{\LabCorrespondingLabel}{Corresponding Authors}
+% \renewcommand{\LabLeaderLabel}{Project Leaders}

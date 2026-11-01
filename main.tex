@@ -1,0 +1,30 @@
+% !TeX program = pdflatex
+% Main entry point. Edit config.tex and metadata.tex first.
+\input{config}
+\documentclass[11pt,a4paper]{labpaper}
+\input{metadata}
+\begin{document}
+\maketitle
+\input{sections/abstract}
+\ifLabCoverPage\clearpage\fi
+\ifLabShowTOC
+  \tableofcontents
+  \clearpage
+\fi
+\input{sections/introduction}
+\input{sections/related-work}
+\input{sections/method}
+\input{sections/experiments}
+\input{sections/conclusion}
+\ifLabAnonymous\else
+  \section*{Acknowledgements}
+  [Replace with acknowledgements and funding information, or remove this section.]
+\fi
+\bibliographystyle{plainnat}
+\bibliography{references}
+\ifLabShowAppendix
+  \clearpage
+  \appendix
+  \input{sections/appendix}
+\fi
+\end{document}
