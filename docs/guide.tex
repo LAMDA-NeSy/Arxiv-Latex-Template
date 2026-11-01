@@ -1,0 +1,315 @@
+% !TeX program = xelatex
+% Compile from project root: xelatex -jobname=guide docs/guide.tex (twice).
+\documentclass[11pt,a4paper,fontset=fandol]{ctexart}
+\usepackage[margin=22mm,top=22mm,bottom=23mm,headheight=15pt]{geometry}
+\usepackage{xcolor,booktabs,tabularx,array,enumitem,fancyhdr,fvextra}
+\usepackage[most]{tcolorbox}
+\usepackage[colorlinks=true,urlcolor=blue!50!black,linkcolor=blue!50!black]{hyperref}
+\definecolor{Ink}{HTML}{172B4D}
+\definecolor{Accent}{HTML}{0000B3}
+\definecolor{Pale}{HTML}{F2F5FA}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\linespread{1.13}
+\setlist{nosep,leftmargin=1.6em}
+\ctexset{section={format=\Large\bfseries\color{Accent},beforeskip=8pt,afterskip=6pt},
+  subsection={format=\normalsize\bfseries,beforeskip=6pt,afterskip=3pt}}
+\DefineVerbatimEnvironment{Code}{Verbatim}{fontsize=\small,breaklines=true,
+  frame=single,rulecolor=\color{black!15},framesep=6pt}
+\newtcolorbox{Tip}{colback=Pale,colframe=Accent!25,boxrule=0.5pt,arc=1mm,
+  left=8pt,right=8pt,top=6pt,bottom=6pt}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small\color{Ink}组内公用论文模板 · 使用说明}
+\fancyhead[R]{\small v1.1}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newcommand{\code}[1]{\texttt{\small\detokenize{#1}}}
+\hypersetup{pdftitle={组内公用论文 LaTeX 模板使用说明},pdfauthor={}}
+\begin{document}
+{\Huge\bfseries\color{Accent}组内公用论文模板}\par
+{\Large 使用说明}\par\vspace{4pt}
+{\small v1.1 · 2026-11-01 · LaTeX 源码与配置可直接编辑}
+
+\begin{Tip}
+模板保留参考项目的 A4 单栏、Charter 字体、深蓝标题、灰底摘要和页眉线。
+标题、作者、单位、邮箱、项目链接、正文与文献均为通用占位内容。
+先改 \code{metadata.tex}，再写正文；换字体和配色时改 \code{config.tex}。
+\end{Tip}
+
+\section*{1. 快速开始}
+将完整 ZIP 导入 TeXPage 或 Overleaf，主文件选择 \code{main.tex}，编译器默认选择
+\textbf{pdfLaTeX}，参考文献使用 \textbf{BibTeX}。所有子目录与类文件必须一起上传。
+
+本地在项目根目录编译：
+\begin{Code}
+latexmk -pdf main.tex
+\end{Code}
+若没有 latexmk，按以下顺序执行：
+\begin{Code}
+pdflatex main.tex
+bibtex main
+pdflatex main.tex
+pdflatex main.tex
+\end{Code}
+
+\subsection*{文件怎么分工}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+文件 & 修改内容 \\\midrule
+\code{main.tex} & 编译入口、章节顺序、正文基本字号 \\
+\code{metadata.tex} & 标题、作者、单位、角色、邮箱、项目地址 \\
+\code{config.tex} & 字体、颜色、字号、目录与输出开关 \\
+\code{sections/} & 分章节写作；子文件只写正文 \\
+\code{references.bib} & 替换占位文献，添加真实 BibTeX 条目 \\
+\code{figures/} & 放入实际图片，再通过路径引用 \\
+\code{labpaper.cls} & 共享样式实现，日常写作无需修改 \\
+\code{README.md} & 更完整的说明、常见问题与命令速查 \\
+\bottomrule
+\end{tabularx}
+
+\subsection*{中文正文}
+将 \code{config.tex} 的 \code{\LabChinesefalse} 改为 \code{\LabChinesetrue}，
+并切换到 \textbf{XeLaTeX}。本地用 \code{latexmk -xelatex main.tex}。
+模板使用 TeX 发行版自带的 Fandol 中文字体；此开关不自动翻译章节名称。
+
+\clearpage
+\section*{2. 作者、通讯作者与 Project Leader}
+每位作者写一条 \code{\LabAuthor{姓名}{单位编号}{角色}}；编号和角色使用英文逗号，
+角色键之间不要加空格。无角色时保留空的第三个参数 \code{{}}。
+\begin{Code}
+\LabAuthor{Author One}{1,2}{core}
+\LabAuthor{Author Two}{1}{corr}
+\LabAuthor{Author Three}{2}{corr,lead}
+\LabAuthor{Author Four}{1}{}
+
+\LabAffiliation{1}{Laboratory, Institution, City, Country}
+\LabAffiliation{2}{Department, Institution, City, Country}
+\end{Code}
+
+\begin{tabularx}{\linewidth}{@{}lllX@{}}
+\toprule
+角色键 & 上标 & 默认图例 & 用法 \\\midrule
+\code{core} & * & Core Contributors & 标记核心贡献者 \\
+\code{corr} & \textsuperscript{\ensuremath{\dagger}} & Corresponding Authors & 标记通讯作者 \\
+\code{lead} & \textsuperscript{\ensuremath{\ddagger}} & Project Leader & 标记项目负责人 \\
+\bottomrule
+\end{tabularx}
+作者上标和角色图例自动生成，删去某角色的所有作者后，对应图例也自动消失。
+显示顺序遵循作者命令顺序；单位编号须与单位定义对应。
+
+\subsection*{多位通讯作者：标记与邮箱都要设置}
+\begin{Code}
+\LabAuthor{Author Two}{1}{corr}
+\LabAuthor{Author Three}{2}{corr,lead}
+\LabEmail{author.two@example.org}
+\LabEmail{author.three@example.org}
+\end{Code}
+\code{corr} 控制上标与图例；\code{\LabEmail} 控制邮箱。
+所有邮箱并列显示在同一行，不显示姓名前缀。两者独立：只填邮箱不会生成通讯作者上标。
+
+\subsection*{Project Leader 的两种写法}
+负责人也是作者：给其角色加 \code{lead}。可与 \code{corr}、\code{core} 组合。
+非作者负责人：取消下面命令的注释，仅显示独立说明行，不增加作者：
+\begin{Code}
+\LabProjectLead{Project Leader Name}
+\end{Code}
+需要多位负责人、等贡献或其他角色文字时，在 \code{metadata.tex} 修改图例：
+\begin{Code}
+\renewcommand{\LabLeaderLabel}{Project Leaders}
+\renewcommand{\LabCoreLabel}{Equal Contribution}
+\end{Code}
+\code{core} 的默认含义是核心贡献者；模板不预设它等同于共同第一作者。
+
+\clearpage
+\section*{3. 字体、字号与颜色}
+\subsection*{整篇字体：在 config.tex 中修改已有定义}
+\begin{Code}
+\newcommand{\LabFontProfile}{charter}
+\end{Code}
+\begin{tabularx}{\linewidth}{@{}lllX@{}}
+\toprule
+配置值 & 正文 & 数学字体 & 说明 \\\midrule
+\code{charter} & XCharter & newtxmath / Charter & 默认，接近参考项目 \\
+\code{times} & newtxtext & newtxmath & Times 风格 \\
+\code{modern} & Latin Modern & Latin Modern & 常见 LaTeX 风格 \\
+\bottomrule
+\end{tabularx}
+模板已处理西文与数学字体配对，无需再次加载字体宏包。中文模式使用 Fandol 中文字体，
+上面的设置仍控制西文。切换后应重新检查标题与图表换行。
+
+\subsection*{正文与局部字号}
+正文在 \code{main.tex} 的 \code{\documentclass} 中选 \code{10pt}、\code{11pt}
+或 \code{12pt}。其他字号在 \code{config.tex} 修改；行距要大于字号：
+\begin{Code}
+\newcommand{\LabTitleSize}{21}
+\newcommand{\LabTitleLeading}{23}
+\newcommand{\LabAuthorSize}{11}
+\newcommand{\LabAffiliationSize}{10}
+\newcommand{\LabSectionSize}{13}
+\end{Code}
+
+\subsection*{统一配色：6 位十六进制数，不带井号}
+\begin{Code}
+\newcommand{\LabTitleColor}{0000B3}
+\newcommand{\LabHeadingColor}{000000}
+\newcommand{\LabBodyColor}{000000}
+\newcommand{\LabLinkColor}{000080}
+\newcommand{\LabRuleColor}{000000}
+\newcommand{\LabAbstractBackground}{F2F2F2}
+\newcommand{\LabAbstractBorder}{B3B3B3}
+\newcommand{\LabNoteColor}{B45309}
+\end{Code}
+它们依次控制标题、章节、正文、链接与引用、页眉线、摘要背景、摘要边框和批注。
+修改已有定义，不要重复添加同名 \code{\newcommand}。
+
+\subsection*{只给一段文字着色}
+\begin{Code}
+\textcolor{LinkColor}{Colored phrase}
+{\color{red} A red paragraph.}
+\end{Code}
+大括号限定范围。新增颜色可用 \code{\definecolor{Highlight}{HTML}{0F766E}}，
+放在 \code{main.tex} 加载类之后、正文之前；不能放进提前读取的配置文件。
+
+\clearpage
+\section*{4. 标题信息、输出开关与协作}
+\subsection*{页眉、日期与资源地址}
+\begin{Code}
+\title{Your Manuscript Title}
+\LabRunningTitle{Short Running Title}
+\LabDate{}  % Empty = hidden. Use \today or a fixed date.
+\LabResource{Project}{https://example.org/project}{Project page}
+\LabResource{Code}{https://example.org/code}{Code repository}
+\LabResource{Data}{https://example.org/data}{Dataset}
+\end{Code}
+页眉用短标题避免挤占空间。没有资源链接时删除或注释整行。日期为空则不显示；
+\code{\today} 随编译日期改变，固定版本可直接填写固定日期。
+
+\subsection*{config.tex 中每个开关只保留一次声明}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+默认设置 & 作用 \\\midrule
+\code{\LabCoverPagetrue} & 摘要后换页，形成独立首页 \\
+\code{\LabShowTOCtrue} & 显示独立目录页 \\
+\code{\LabShowAppendixtrue} & 参考文献后显示附录 \\
+\code{\LabShowNotestrue} & 显示组内批注 \\
+\code{\LabAnonymousfalse} & 是否隐藏首页作者信息、资源与致谢 \\
+\code{\LabMonochromefalse} & 是否将模板主题切换为黑白 \\
+\code{\LabChinesefalse} & 是否启用中文，需 XeLaTeX \\
+\bottomrule
+\end{tabularx}
+把配置中相应一行末尾的 \code{true} 改为 \code{false} 即可关闭，反之开启。
+短论文通常关闭封面换页和目录；关闭附录会略去所有附录写作示例。
+
+\subsection*{内部批注}
+\begin{Code}
+\reviewnote[AB]{Please check this argument.}
+\end{Code}
+\code{\LabShowNotesfalse} 会隐藏整条批注。黑白模式会改写模板已定义的颜色，
+但不会改变外部图片或正文里自行指定的红色等颜色。
+
+\begin{Tip}
+匿名开关会隐藏首页作者区、联系信息、资源链接及模板致谢，并清空 PDF 作者元数据。
+它不检查正文、图片、引用和附件，也不删除源码里的身份信息。双盲投稿前仍需人工核对。
+\end{Tip}
+
+\subsection*{组内共用的建议分工}
+维护者统一管理类文件与配置；各作者在分开的章节文件中写作。新论文复制一份模板，
+先替换稿件信息和文献，再写正文；共享模板自身只保留通用内容。
+
+\clearpage
+\section*{5. 写正文：图、表、公式和参考文献}
+\subsection*{章节结构}
+在 \code{sections/} 新建文件，并在 \code{main.tex} 对应位置加入
+\code{\input{sections/your-section}}。子文件只写内容，不再声明文档类或正文环境。
+
+Related Work 为独立一级章节，内容位于 \code{sections/related-work.tex}。
+
+\subsection*{添加图片：先放文件，再引用}
+\begin{Code}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/your-figure.pdf}
+  \caption{Describe the figure.}
+  \label{fig:example}
+\end{figure}
+Figure~\ref{fig:example}
+\end{Code}
+图题和表题默认居中，显示为“Figure 1 | …”和“Table 1 | …”。标签放在题注后。
+浮动选项 \code{[htbp]} 允许 LaTeX 选择合理位置，不保证紧跟源码原地显示。
+
+\subsection*{三线表与公式}
+\begin{Code}
+\begin{table}[htbp]
+  \centering
+  \caption{Describe metrics and settings.}\label{tab:example}
+  \begin{tabular}{lcc}
+    \toprule
+    Approach & Metric A & Metric B \\
+    \midrule
+    Baseline & -- & -- \\
+    Proposed approach & -- & -- \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\begin{equation}\label{eq:example}
+  a^2+b^2=c^2.
+\end{equation}
+Equation~\eqref{eq:example}; Table~\ref{tab:example}
+\end{Code}
+
+\subsection*{引用与文献库}
+将真实 BibTeX 记录放入 \code{references.bib}，用 \code{\citet{key}} 生成叙述式引用，
+用 \code{\citep{key}} 生成括号式引用。默认是 natbib 的作者—年份格式。
+当前占位文献是明确标注的虚构条目，必须替换。
+
+改成数字引用时，在主文件加载类之后设置数字样式，并替换文末的文献样式：
+\begin{Code}
+\setcitestyle{numbers,square}
+\bibliographystyle{unsrtnat}
+\end{Code}
+第二行用于替换原有的文献样式命令。保持使用 BibTeX，不叠加 biblatex。
+
+\clearpage
+\section*{6. 故障排查与模板维护}
+\begin{tabularx}{\linewidth}{@{}p{40mm}X@{}}
+\toprule
+现象 & 处理方式 \\\midrule
+引用或编号出现 \code{??} & 核对键名；运行 LaTeX、BibTeX、LaTeX、LaTeX。
+  目录和交叉引用也需要多轮编译。 \\
+\code{File ... not found} & 检查文件是否上传、路径及大小写是否一致；不要引用尚未放入的图片。 \\
+\code{Unknown author role} & 仅使用 \code{core,corr,lead}，键之间不加空格；无角色写空参数。 \\
+中文不显示 & 启用中文开关并选 XeLaTeX；本地需安装 ctex 与 Fandol。 \\
+作者或页眉太挤 & 缩短运行标题，调整作者字号；长单位名称允许自动换行。 \\
+切换编译器后异常 & 清理编译缓存后重编译，避免混用不同编译器的辅助文件。 \\
+字体宏包不存在 & 使用含 XCharter、newtxmath、zlmtt 的完整 TeX 发行版或在线平台。 \\
+\bottomrule
+\end{tabularx}
+
+\subsection*{文本里的特殊字符}
+普通文本中的特殊字符要转义；邮箱与网址使用模板命令或 \code{\url}。
+\begin{Code}
+\&  \%  \$  \#  \_  \{  \}
+\end{Code}
+
+\subsection*{发稿前替换占位内容}
+\begin{enumerate}
+  \item 替换标题、作者、单位、邮箱和所有 \code{example.org} 资源链接。
+  \item 替换所有方括号说明、虚构文献、图框和表中空值，删除写作示例。
+  \item 核对作者顺序、单位编号、通讯作者、Project Leader 与角色说明。
+  \item 关闭内部批注；按目标要求处理目录、附录与匿名信息。
+  \item 重新编译并检查 PDF 中的换页、图表、页眉、引用和字体。
+\end{enumerate}
+这是组内写作与预印本底稿；有指定版式的会议或期刊，应使用出版方正式模板。
+
+\subsection*{版本与来源}
+本模板样式改编自用户提供的 TeXPage 项目中的 \code{thuc3i.cls}，
+继承其声明的 CC BY-SA 4.0 许可。改编版本重写了作者角色、设置与摘要逻辑，
+并去除了原论文信息。完整来源、原文件署名信息和修改记录见 \code{NOTICE.md}。
+
+\subsection*{如何重新生成这份说明}
+在项目根目录运行下面命令两次；论文主文件仍保持为 \code{main.tex}：
+\begin{Code}
+xelatex -jobname=guide docs/guide.tex
+\end{Code}
+更多可复制命令与说明见 \code{README.md}。
+\end{document}
