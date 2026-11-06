@@ -1,7 +1,7 @@
 # 组内公用论文 LaTeX 模板
 
 本模板参考所给 TeXPage 项目的排版：A4 单栏、Charter 正文与配套数学字体、
-深蓝标题、黑色页眉线、灰底摘要、作者与单位集中展示、作者—年份引用。
+深蓝标题、黑色页眉线、浅灰蓝底摘要、作者与单位集中展示、作者—年份引用。
 源论文的标题、作者、单位、邮箱、项目地址、研究内容和参考文献均已替换为占位内容。
 
 这是组内写作与预印本的通用底稿。向会议或期刊投稿时，应迁移到目标出版方规定的模板。
@@ -10,7 +10,7 @@
 
 1. 将整个文件夹压缩上传到 TeXPage / Overleaf，或导入随附 ZIP。不要只上传 `main.tex`。
 2. 将主文件设为 `main.tex`，默认编译器选 **pdfLaTeX**，参考文献使用 **BibTeX**。
-3. 修改 `metadata.tex` 中的标题、作者、单位、邮箱及资源链接。
+3. 修改 `metadata.tex` 中的单位 Logo、标题、作者、单位、邮箱及资源链接。
 4. 修改 `sections/` 中的正文，替换 `references.bib` 的占位条目。
 5. 需要换字体、颜色或显示方式时，修改 `config.tex`。
 
@@ -44,16 +44,37 @@ latexmk -xelatex main.tex
 | --- | --- |
 | `main.tex` | 编译入口、章节顺序、参考文献入口；正文大小为 11pt |
 | `config.tex` | 字体、颜色、字号和显示开关 |
-| `metadata.tex` | 标题、作者、单位、角色、邮箱、项目地址 |
+| `metadata.tex` | 首页 Logo、标题、作者、单位、角色、邮箱、项目地址 |
 | `sections/*.tex` | 分章撰写的正文与附录 |
 | `references.bib` | BibTeX 文献数据库；目前只有显式虚构的占位条目 |
-| `figures/` | 图片目录；目前无具体论文图片 |
+| `figures/` | 图片目录；含用户提供的南京大学横版 Logo 示例 `nju-logo.jpg` |
 | `labpaper.cls` | 样式实现，普通组员通常无需编辑 |
 | `docs/guide.tex`、`guide.pdf` | 可编辑中文说明源码及阅读版；独立使用 XeLaTeX 编译 |
 | `main.pdf` | 使用默认配置编译的模板预览 |
 | `NOTICE.md` | 原模板许可、来源及本次修改记录 |
 
-## 3. 标题、页眉与日期
+## 3. 首页单位 Logo、标题、页眉与日期
+
+首页左上方支持单位 Logo 与可选的单位名称，位于页眉线和论文标题上方。
+默认嵌入用户提供的南京大学横版 Logo 原图（含校徽及中英文校名），不另外排印单位文字，
+宽高比保持不变。在 `metadata.tex` 修改：
+
+```latex
+\LabLogo[1.1cm]{figures/nju-logo.jpg}
+\LabLogoText{}
+```
+
+方括号内是图片高度，省略时默认 `1.1cm`；例如改成 `[1.4cm]` 可放大。
+更换单位时，把新图片放入 `figures/`，再修改文件路径和名称。
+图片可用 PDF、PNG 或 JPG；页眉高度会按 Logo 自动调整。
+
+- 只显示图片（默认）：使用 `\LabLogoText{}`；如需文字可改为 `\LabLogoText{单位名称}`。
+- 不显示 Logo：使用 `\LabLogo{}`，或注释 Logo 设置，首页恢复短标题页眉。
+- Logo 仅显示在首页，后续页仍显示 `\LabRunningTitle`。
+- `\LabAnonymoustrue` 会自动隐藏 Logo 和单位名称。
+- 黑白主题不会改变 Logo 图片自身的颜色；需要灰度 Logo 时请替换图片。
+
+示例 Logo 仅用于演示排版，后续使用时请按实际单位替换。
 
 在 `metadata.tex` 中修改：
 
@@ -199,10 +220,12 @@ latexmk -xelatex main.tex
 \newcommand{\LabBodyColor}{000000}          % 正文：黑
 \newcommand{\LabLinkColor}{000080}          % 引用、交叉引用、URL
 \newcommand{\LabRuleColor}{000000}          % 页眉线
-\newcommand{\LabAbstractBackground}{F2F2F2} % 摘要背景
-\newcommand{\LabAbstractBorder}{B3B3B3}     % 摘要边框
+\newcommand{\LabAbstractBackground}{F9FAFC} % 摘要背景：近白浅灰蓝
+\newcommand{\LabAbstractBorder}{E3E8F0}     % 摘要边框：浅灰蓝
 \newcommand{\LabNoteColor}{B45309}          % 组内批注
 ```
+
+摘要框默认采用近白底色、0.35pt 细边框与轻微圆角，并留出较宽的内边距。
 
 局部文字颜色可直接使用已定义的颜色名：
 
@@ -232,7 +255,7 @@ latexmk -xelatex main.tex
 | `\LabShowTOCtrue` | 开 | 插入独立目录页 |
 | `\LabShowAppendixtrue` | 开 | 在参考文献后插入附录 |
 | `\LabShowNotestrue` | 开 | 显示组内批注 |
-| `\LabAnonymousfalse` | 关 | 打开时隐藏首页身份、邮箱、资源及致谢 |
+| `\LabAnonymousfalse` | 关 | 打开时隐藏首页 Logo、身份、邮箱、资源及致谢 |
 | `\LabMonochromefalse` | 关 | 打开时使用黑白主题 |
 | `\LabChinesefalse` | 关 | 打开时支持中文正文，需 XeLaTeX |
 
@@ -253,7 +276,7 @@ latexmk -xelatex main.tex
 
 关掉 `\LabShowNotes` 后整条批注不出现在 PDF 中，也不会留下占位空白。
 
-匿名模式是排版辅助：它隐藏首页作者区、邮箱、项目资源和本模板的致谢段，并令 PDF 作者
+匿名模式是排版辅助：它隐藏首页 Logo、单位名称、作者区、邮箱、项目资源和本模板的致谢段，并令 PDF 作者
 元数据为空。它不会扫描正文、图片、参考文献、文件名或补充材料中的身份线索，也不会
 隐藏源码中的 `metadata.tex`。双盲投稿仍需按目标要求人工检查。
 

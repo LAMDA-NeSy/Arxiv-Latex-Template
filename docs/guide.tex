@@ -2,7 +2,7 @@
 % Compile from project root: xelatex -jobname=guide docs/guide.tex (twice).
 \documentclass[11pt,a4paper,fontset=fandol]{ctexart}
 \usepackage[margin=22mm,top=22mm,bottom=23mm,headheight=15pt]{geometry}
-\usepackage{xcolor,booktabs,tabularx,array,enumitem,fancyhdr,fvextra}
+\usepackage{xcolor,graphicx,booktabs,tabularx,array,enumitem,fancyhdr,fvextra}
 \usepackage[most]{tcolorbox}
 \usepackage[colorlinks=true,urlcolor=blue!50!black,linkcolor=blue!50!black]{hyperref}
 \definecolor{Ink}{HTML}{172B4D}
@@ -20,7 +20,7 @@
   left=8pt,right=8pt,top=6pt,bottom=6pt}
 \pagestyle{fancy}\fancyhf{}
 \fancyhead[L]{\small\color{Ink}组内公用论文模板 · 使用说明}
-\fancyhead[R]{\small v1.1}
+\fancyhead[R]{\small v1.2.1}
 \fancyfoot[C]{\small\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 \newcommand{\code}[1]{\texttt{\small\detokenize{#1}}}
@@ -28,10 +28,10 @@
 \begin{document}
 {\Huge\bfseries\color{Accent}组内公用论文模板}\par
 {\Large 使用说明}\par\vspace{4pt}
-{\small v1.1 · 2026-11-01 · LaTeX 源码与配置可直接编辑}
+{\small v1.2.1 · 2026-11-06 · LaTeX 源码与配置可直接编辑}
 
 \begin{Tip}
-模板保留参考项目的 A4 单栏、Charter 字体、深蓝标题、灰底摘要和页眉线。
+模板使用 A4 单栏、Charter 字体、深蓝标题、浅灰蓝底摘要和页眉线。
 标题、作者、单位、邮箱、项目链接、正文与文献均为通用占位内容。
 先改 \code{metadata.tex}，再写正文；换字体和配色时改 \code{config.tex}。
 \end{Tip}
@@ -57,7 +57,7 @@ pdflatex main.tex
 \toprule
 文件 & 修改内容 \\\midrule
 \code{main.tex} & 编译入口、章节顺序、正文基本字号 \\
-\code{metadata.tex} & 标题、作者、单位、角色、邮箱、项目地址 \\
+\code{metadata.tex} & 首页 Logo、标题、作者、单位、角色、邮箱、项目地址 \\
 \code{config.tex} & 字体、颜色、字号、目录与输出开关 \\
 \code{sections/} & 分章节写作；子文件只写正文 \\
 \code{references.bib} & 替换占位文献，添加真实 BibTeX 条目 \\
@@ -155,8 +155,8 @@ pdflatex main.tex
 \newcommand{\LabBodyColor}{000000}
 \newcommand{\LabLinkColor}{000080}
 \newcommand{\LabRuleColor}{000000}
-\newcommand{\LabAbstractBackground}{F2F2F2}
-\newcommand{\LabAbstractBorder}{B3B3B3}
+\newcommand{\LabAbstractBackground}{F9FAFC}
+\newcommand{\LabAbstractBorder}{E3E8F0}
 \newcommand{\LabNoteColor}{B45309}
 \end{Code}
 它们依次控制标题、章节、正文、链接与引用、页眉线、摘要背景、摘要边框和批注。
@@ -192,7 +192,7 @@ pdflatex main.tex
 \code{\LabShowTOCtrue} & 显示独立目录页 \\
 \code{\LabShowAppendixtrue} & 参考文献后显示附录 \\
 \code{\LabShowNotestrue} & 显示组内批注 \\
-\code{\LabAnonymousfalse} & 是否隐藏首页作者信息、资源与致谢 \\
+\code{\LabAnonymousfalse} & 是否隐藏首页 Logo、作者信息、资源与致谢 \\
 \code{\LabMonochromefalse} & 是否将模板主题切换为黑白 \\
 \code{\LabChinesefalse} & 是否启用中文，需 XeLaTeX \\
 \bottomrule
@@ -208,7 +208,7 @@ pdflatex main.tex
 但不会改变外部图片或正文里自行指定的红色等颜色。
 
 \begin{Tip}
-匿名开关会隐藏首页作者区、联系信息、资源链接及模板致谢，并清空 PDF 作者元数据。
+匿名开关会隐藏首页 Logo、单位名称、作者区、联系信息、资源链接及模板致谢，并清空 PDF 作者元数据。
 它不检查正文、图片、引用和附件，也不删除源码里的身份信息。双盲投稿前仍需人工核对。
 \end{Tip}
 
@@ -312,4 +312,46 @@ Equation~\eqref{eq:example}; Table~\ref{tab:example}
 xelatex -jobname=guide docs/guide.tex
 \end{Code}
 更多可复制命令与说明见 \code{README.md}。
+
+\clearpage
+\section*{7. 首页单位 Logo}
+首页左上方支持 Logo 和可选单位名称，位于页眉线和论文标题上方。
+默认嵌入用户提供的南京大学横版 Logo 原图，不另外排印单位文字，效果如下：
+
+\begin{Tip}
+\includegraphics[height=1.5cm]{figures/nju-logo.jpg}\par
+\smallskip\hrule\medskip
+{\Large\bfseries\color{Accent}Manuscript Title}\par
+{\small 此处仅示意横版 Logo、页眉线与论文标题的位置关系。}
+\end{Tip}
+
+\subsection*{更换图片、名称与大小}
+在 \code{metadata.tex} 修改：
+\begin{Code}
+\LabLogo[1.1cm]{figures/nju-logo.jpg}
+\LabLogoText{}
+\end{Code}
+方括号是图片高度，省略时默认 \code{1.1cm}；图片按原比例缩放，页眉高度自动调整。
+更换单位时把 PDF、PNG 或 JPG 放入 \code{figures/}，再修改路径与名称。
+
+\subsection*{常用设置}
+\begin{Code}
+% A larger logo:
+\LabLogo[1.4cm]{figures/your-logo.pdf}
+
+% Image only, without an institution name:
+\LabLogoText{}
+
+% No logo; restore the running-title header:
+\LabLogo{}
+\end{Code}
+Logo 仅显示在首页，后续页仍显示 \code{\LabRunningTitle}。
+\code{\LabAnonymoustrue} 自动隐藏 Logo 和单位名称；关闭匿名模式后按原设置恢复。
+黑白主题不改变图片自身颜色，需要灰度 Logo 时请自行替换图片。
+
+\begin{Tip}
+\raggedright
+示例 Logo 仅用于演示排版。修改 \code{metadata.tex} 即可更换图片和单位名称，
+无需编辑类文件或手动改变页面边距。
+\end{Tip}
 \end{document}

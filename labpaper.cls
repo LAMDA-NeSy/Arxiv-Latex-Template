@@ -1,4 +1,4 @@
-% labpaper.cls -- generic group manuscript class, version 1.1 (2026-11-01).
+% labpaper.cls -- generic group manuscript class, version 1.2.1 (2026-11-06).
 % Adapted from thuc3i.cls supplied by the user through TeXPage:
 % https://tex.nju.edu.cn/share/b06399ae7af64309ace7ca896c544124
 % The supplied class declares CC BY-SA 4.0 and credits earlier template work
@@ -6,8 +6,10 @@
 % This adapted class is also distributed under CC BY-SA 4.0.
 % Changes: renamed class; consolidated options/fonts; rebuilt metadata/roles;
 % fixed abstract and title handling; removed institution logos and paper data.
+% v1.2: optional first-page institution logo, hidden in anonymous mode.
+% v1.2.1: lighter abstract panel with a finer border and more breathing room.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{labpaper}[2026/11/01 v1.1 Generic group manuscript]
+\ProvidesClass{labpaper}[2026/11/06 v1.2.1 Generic group manuscript]
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
 \LoadClass{article}
@@ -62,7 +64,7 @@
   \colorlet{TitleColor}{black}\colorlet{HeadingColor}{black}
   \colorlet{BodyColor}{black}\colorlet{LinkColor}{black}
   \colorlet{RuleColor}{black}\colorlet{NoteColor}{black}
-  \colorlet{AbstractBackground}{gray!5}\colorlet{AbstractBorder}{gray!40}
+  \colorlet{AbstractBackground}{gray!2}\colorlet{AbstractBorder}{gray!15}
 \fi
 \hypersetup{linkcolor=LinkColor,citecolor=LinkColor,urlcolor=LinkColor,
   pdfcreator={LaTeX with labpaper.cls}}
@@ -88,9 +90,35 @@
 \newcommand{\lab@projectlead}{}
 \newcommand{\lab@date}{}
 \newcommand{\lab@runningtitle}{}
+\newcommand{\lab@logo}{}
+\newcommand{\lab@logoheight}{1.1cm}
+\newcommand{\lab@logotext}{}
+\newsavebox{\lab@logobox}
+\newsavebox{\lab@firstheaderbox}
+\newlength{\lab@logoheadheight}
 \newcommand{\LabRunningTitle}[1]{\gdef\lab@runningtitle{#1}}
 \newcommand{\LabDate}[1]{\gdef\lab@date{#1}}
 \newcommand{\LabProjectLead}[1]{\gdef\lab@projectlead{#1}}
+% Optional logo replaces the running title in the first-page header only.
+% Syntax: \LabLogo[height]{file}; \LabLogo{} restores the text-only header.
+\newcommand{\LabLogo}[2][1.1cm]{%
+  \gdef\lab@logo{#2}\gdef\lab@logoheight{#1}}
+\newcommand{\LabLogoText}[1]{\gdef\lab@logotext{#1}}
+\AtEndPreamble{%
+  \ifLabAnonymous\else
+    \ifdefempty{\lab@logo}{}{%
+      \IfFileExists{\lab@logo}{%
+        \sbox{\lab@logobox}{\includegraphics[height=\lab@logoheight]{\lab@logo}}%
+        \sbox{\lab@firstheaderbox}{\parbox[b]{0.78\textwidth}{%
+          \small\bfseries\lab@firstheader}}%
+        \setlength{\lab@logoheadheight}{%
+          \dimexpr\ht\lab@firstheaderbox+\dp\lab@firstheaderbox+6pt\relax}%
+        \ifdim\headheight<\lab@logoheadheight
+          \geometry{headheight=\lab@logoheadheight}%
+        \fi
+      }{\ClassError{labpaper}{Logo file not found: \lab@logo}
+        {Upload the logo file, fix its path, or use \string\LabLogo{} to hide it.}}}%
+  \fi}
 \newcommand{\lab@registerrole}[1]{%
   \ifstrequal{#1}{core}{\global\lab@coretrue}{%
   \ifstrequal{#1}{corr}{\global\lab@corrtrue}{%
@@ -118,6 +146,15 @@
 
 \newcommand{\lab@header}{%
   \ifdefempty{\lab@runningtitle}{\@title}{\lab@runningtitle}}
+\newcommand{\lab@firstheader}{%
+  \ifLabAnonymous
+    \lab@header
+  \else
+    \ifdefempty{\lab@logo}{\lab@header}{%
+      \raisebox{-0.35\height}{\usebox{\lab@logobox}}%
+      \ifdefempty{\lab@logotext}{}{\hspace{0.7em}\lab@logotext}%
+      \par\vspace{4pt}}%
+  \fi}
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[C]{\small\lab@header}
@@ -128,7 +165,7 @@
 \renewcommand{\headrule}{\begingroup\color{RuleColor}\lab@headrule\endgroup}
 \fancypagestyle{firststyle}{%
   \fancyhf{}
-  \fancyhead[L]{\parbox[b]{0.78\textwidth}{\small\bfseries\lab@header}}
+  \fancyhead[L]{\parbox[b]{0.78\textwidth}{\small\bfseries\lab@firstheader}}
   \fancyhead[R]{\small\itshape\lab@date}}
 
 \renewcommand{\maketitle}{%
@@ -161,8 +198,8 @@
 % Abstract is a normal breakable environment; no hidden content capture.
 \renewenvironment{abstract}{%
   \begin{tcolorbox}[breakable,colback=AbstractBackground,colframe=AbstractBorder,
-    boxrule=0.5pt,arc=2mm,left=8pt,right=8pt,top=8pt,bottom=8pt,
-    before skip=4pt,after skip=10pt]
+    boxrule=0.35pt,arc=1.5mm,left=11pt,right=11pt,top=10pt,bottom=10pt,
+    before skip=6pt,after skip=12pt]
   \small\textbf{Abstract}\par\smallskip\ignorespaces
 }{\end{tcolorbox}}
 \newcommand{\keywords}[1]{\par\smallskip\textbf{Keywords:} #1}
