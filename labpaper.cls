@@ -1,4 +1,4 @@
-% labpaper.cls -- generic group manuscript class, version 1.2.1 (2026-11-06).
+% labpaper.cls -- generic group manuscript class, version 1.3 (2026-11-09).
 % Adapted from thuc3i.cls supplied by the user through TeXPage:
 % https://tex.nju.edu.cn/share/b06399ae7af64309ace7ca896c544124
 % The supplied class declares CC BY-SA 4.0 and credits earlier template work
@@ -8,8 +8,9 @@
 % fixed abstract and title handling; removed institution logos and paper data.
 % v1.2: optional first-page institution logo, hidden in anonymous mode.
 % v1.2.1: lighter abstract panel with a finer border and more breathing room.
+% v1.3: icon links inside the abstract panel, including Hugging Face.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{labpaper}[2026/11/06 v1.2.1 Generic group manuscript]
+\ProvidesClass{labpaper}[2026/11/09 v1.3 Generic group manuscript]
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
 \LoadClass{article}
@@ -48,6 +49,7 @@
 \RequirePackage{enumitem,caption,subcaption}
 \RequirePackage{fancyhdr,titlesec}
 \RequirePackage[most]{tcolorbox}
+\RequirePackage{fontawesome5}
 \RequirePackage[authoryear,round]{natbib}
 \RequirePackage{xurl}
 \RequirePackage[colorlinks=true]{hyperref}
@@ -141,8 +143,27 @@
   \gappto\lab@contacts{\href{mailto:#1}{\nolinkurl{#1}}}}
 % Compatibility with v1.0: the author-name argument is no longer displayed.
 \newcommand{\LabCorrespondence}[2]{\LabEmail{#2}}
-\newcommand{\LabResource}[3]{%
-  \gappto\lab@resources{\noindent\textbf{#1:} \href{#2}{#3}\quad\allowbreak}}
+% Resource labels select icons; an optional argument overrides the icon.
+% Keep the three required arguments compatible with earlier versions.
+\csdef{lab@resourceicon@Project}{\faGlobe}
+\csdef{lab@resourceicon@Code}{\faGithub}
+\csdef{lab@resourceicon@Data}{\faDatabase}
+\csdef{lab@resourceicon@Demo}{\faPlayCircle}
+\csdef{lab@resourceicon@Paper}{\faFilePdf}
+\newcommand{\lab@huggingfaceicon}{%
+  \raisebox{-0.25em}{\includegraphics[height=1.3em]{figures/huggingface-logo.pdf}}}
+\csdef{lab@resourceicon@HuggingFace}{\lab@huggingfaceicon}
+\csdef{lab@resourceicon@Hugging Face}{\lab@huggingfaceicon}
+\newcommand{\lab@resourceicon}[1]{%
+  \ifcsdef{lab@resourceicon@#1}{\csuse{lab@resourceicon@#1}}{\faLink}}
+\newcommand{\lab@printresource}[4]{%
+  \mbox{\href{#3}{%
+    \makebox[1.45em][c]{\ifstrempty{#1}{\lab@resourceicon{#2}}{#1}}%
+    \hspace{0.35em}{\sffamily\fontseries{bx}\selectfont#4}}}}
+\newcommand{\LabResource}[4][]{%
+  \ifdefempty{\lab@resources}{}{%
+    \gappto\lab@resources{\par\vspace{4pt}\noindent}}%
+  \gappto\lab@resources{\lab@printresource{#1}{#2}{#3}{#4}}}
 
 \newcommand{\lab@header}{%
   \ifdefempty{\lab@runningtitle}{\@title}{\lab@runningtitle}}
@@ -189,7 +210,6 @@
       \ifdefempty{\lab@projectlead}{}{\vspace{4pt}{\small
         \textbf{\LabLeaderLabel:} \lab@projectlead\par}}
       \ifdefempty{\lab@contacts}{}{\vspace{4pt}{\small\noindent\lab@contacts\par}}
-      \ifdefempty{\lab@resources}{}{\vspace{4pt}{\small\lab@resources\par}}
     \fi
   \endgroup
   \vspace{8pt}
@@ -197,11 +217,23 @@
 
 % Abstract is a normal breakable environment; no hidden content capture.
 \renewenvironment{abstract}{%
-  \begin{tcolorbox}[breakable,colback=AbstractBackground,colframe=AbstractBorder,
+  \begin{tcolorbox}[enhanced,breakable,colback=AbstractBackground,colframe=AbstractBorder,
     boxrule=0.35pt,arc=1.5mm,left=11pt,right=11pt,top=10pt,bottom=10pt,
+    middle=8pt,colbacklower=AbstractBackground,
+    segmentation style={solid,draw=AbstractBorder,line width=0.35pt},
     before skip=6pt,after skip=12pt]
-  \small\textbf{Abstract}\par\smallskip\ignorespaces
-}{\end{tcolorbox}}
+  \small{\centering\bfseries Abstract\par}\smallskip
+  \raggedright\ignorespaces
+}{%
+  \ifLabAnonymous\else
+    \ifdefempty{\lab@resources}{}{%
+      \tcblower
+      \begingroup
+        \raggedright\setlength{\parskip}{0pt}%
+        \small\noindent\lab@resources\unskip\par
+      \endgroup}%
+  \fi
+  \end{tcolorbox}}
 \newcommand{\keywords}[1]{\par\smallskip\textbf{Keywords:} #1}
 
 \titleformat{\section}{\color{HeadingColor}\bfseries

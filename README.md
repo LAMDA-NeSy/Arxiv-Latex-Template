@@ -162,17 +162,36 @@ latexmk -xelatex main.tex
 \renewcommand{\LabCoreLabel}{Equal Contribution}
 ```
 
-## 5. 项目主页、代码和数据地址
+## 5. 摘要框内的项目主页、代码和 Hugging Face 链接
 
-命令的三个参数是：**显示标签、实际 URL、链接文字**。
+Abstract 标题居中，摘要正文左对齐，默认不显示 Keywords。
+资源链接显示在 Abstract 框底部，与摘要正文之间用浅色细线分隔，每项独占一行并左对齐。
+默认的 Project page、Code、Hugging Face 分为三行，每个链接包含图标和文字，整体可点击。
+首页页眉仍保留单位 Logo。匿名模式会隐藏全部资源及分隔线。
+
+在 `metadata.tex` 设置。命令的三个必选参数是：**资源类型、实际 URL、链接文字**。
 
 ```latex
 \LabResource{Project}{https://example.org/project}{Project page}
-\LabResource{Code}{https://example.org/code}{Code repository}
+\LabResource{Code}{https://example.org/code}{Code}
+\LabResource{HuggingFace}{https://example.org/models}{Hugging Face}
 \LabResource{Data}{https://example.org/data}{Dataset}
 ```
 
-可重复添加。没有链接时删除或注释整行，不要留下 `example.org` 地址。
+资源类型 `Project`、`Code`、`HuggingFace`（或 `Hugging Face`）、`Data`、`Demo`、`Paper`
+分别使用地球、GitHub、Hugging Face、数据库、播放、PDF 图标；其他类型默认使用通用链接图标。
+Hugging Face 图标使用随模板附带的矢量 PDF，无需启用 shell escape 或额外转换。
+
+可重复添加，也可以通过可选参数指定 Font Awesome 图标或自己的小 Logo：
+
+```latex
+\LabResource[\faVideo]{Video}{https://example.org/video}{Video}
+\LabResource[{\includegraphics[height=1em]{figures/your-logo.pdf}}]
+  {Custom}{https://example.org/custom}{Custom resource}
+```
+
+没有链接时删除或注释整行；删除全部资源后，摘要框不保留空的链接栏或分隔线。
+现有三个链接均为占位地址，使用时请替换为真实项目地址。
 
 ## 6. 修改字体与字号
 
@@ -226,6 +245,7 @@ latexmk -xelatex main.tex
 ```
 
 摘要框默认采用近白底色、0.35pt 细边框与轻微圆角，并留出较宽的内边距。
+框底部的资源栏使用相同底色，分隔线沿用摘要边框颜色。
 
 局部文字颜色可直接使用已定义的颜色名：
 

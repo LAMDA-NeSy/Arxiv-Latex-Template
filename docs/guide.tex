@@ -20,7 +20,7 @@
   left=8pt,right=8pt,top=6pt,bottom=6pt}
 \pagestyle{fancy}\fancyhf{}
 \fancyhead[L]{\small\color{Ink}组内公用论文模板 · 使用说明}
-\fancyhead[R]{\small v1.2.1}
+\fancyhead[R]{\small v1.3}
 \fancyfoot[C]{\small\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 \newcommand{\code}[1]{\texttt{\small\detokenize{#1}}}
@@ -28,7 +28,7 @@
 \begin{document}
 {\Huge\bfseries\color{Accent}组内公用论文模板}\par
 {\Large 使用说明}\par\vspace{4pt}
-{\small v1.2.1 · 2026-11-06 · LaTeX 源码与配置可直接编辑}
+{\small v1.3 · 2026-11-09 · LaTeX 源码与配置可直接编辑}
 
 \begin{Tip}
 模板使用 A4 单栏、Charter 字体、深蓝标题、浅灰蓝底摘要和页眉线。
@@ -178,11 +178,18 @@ pdflatex main.tex
 \LabRunningTitle{Short Running Title}
 \LabDate{}  % Empty = hidden. Use \today or a fixed date.
 \LabResource{Project}{https://example.org/project}{Project page}
-\LabResource{Code}{https://example.org/code}{Code repository}
+\LabResource{Code}{https://example.org/code}{Code}
+\LabResource{HuggingFace}{https://example.org/models}{Hugging Face}
 \LabResource{Data}{https://example.org/data}{Dataset}
 \end{Code}
 页眉用短标题避免挤占空间。没有资源链接时删除或注释整行。日期为空则不显示；
 \code{\today} 随编译日期改变，固定版本可直接填写固定日期。
+
+Abstract 标题居中，正文左对齐，默认无 Keywords。
+资源链接在框底部逐行左对齐显示，带可点击图标与细分隔线；匿名模式或无资源时隐藏。
+类型 \code{Project}、\code{Code}、\code{HuggingFace}、\code{Data} 等自动选择图标，
+其他类型使用通用链接图标。可通过可选参数自定义图标，详见 \code{README.md}。
+示例地址均需替换为真实地址。
 
 \subsection*{config.tex 中每个开关只保留一次声明}
 \begin{tabularx}{\linewidth}{@{}lX@{}}

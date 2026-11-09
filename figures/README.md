@@ -14,6 +14,13 @@
 使用 `\LabLogo{}` 可关闭首页 Logo。
 示例图片原样保留，其权利归属不随模板代码许可变更。
 
+`huggingface-logo.svg` 来自 [Hugging Face 官方品牌资源](https://huggingface.co/brand)，
+原文件地址为 <https://huggingface.co/front/assets/huggingface_logo-noborder.svg>。
+`huggingface-logo.pdf` 是该图标的矢量格式转换版，用于摘要框内的 Hugging Face 链接，
+可直接在 pdfLaTeX / XeLaTeX 中编译，无需 shell escape。
+品牌图标的权利归原权利人，不随模板代码的许可变更。
+Project 与 Code 等图标由 TeX 发行版的 `fontawesome5` 宏包提供。
+
 正文示例：
 
 ```latex
